@@ -1,0 +1,2177 @@
+<!DOCTYPE html>
+<!-- saved from url=(0132)blob:https://4191ltbkyscissybmnlkm75cmrkjuyw3vnp11u88zsagzsj1n5-h985969333.scf.usercontent.goog/8ed5f40d-7d02-485a-9206-d6dfaf75d019 -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIxODI1OTU3MDAwOTc2NjQ1OTAzNyIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzRlNTRkZjBlMzlhNTFkNDhfaW5kZXguaHRtbC05MTMifSwiZXhwIjoxNzkwNjUxMTUwLCJpYXQiOjE3OTA2NDc1NTAsImFsZyI6IlJTMjU2In0.pK9B86pMHrQQSUaVVz2d4q0O3fYb1ulpVnACT0qEyz6qHAcBNgJSiKz_m4tbkLPAGrVi_vCSzR-y8oQwjOOI4ld59VgPPYIplkF00QSRz_o8WMU-MJBF-ne0x65qDWBOMng5zOzVC2s59JHmi21rVE5VgGm_W0K9WRvRqiz5WubkiYsokG3LJ2JjnyyH2VOfv_GELCe36mvZCT6GswekfbzCD-5nHw13wYcQEEf7Lj7m8KcrQkUA4gAmNQ8OSD_sGJGDMPP8n1IMKbreEnUp4JrRsWLiz84iCaflNxT2o8aU9V84fP0fkexH3J9tWDkV4u80P7tRMHlpBt9Ykmb-nQ","c_4e54df0e39a51d48_index.html-913")</script><script data-bard-client-injected="true">
+  document.addEventListener('input', (event) => {
+    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
+      const clonedDoc = document.cloneNode(true);
+      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
+      injectedScripts.forEach(el => el.remove());
+      window.parent.postMessage({
+        type: 'inlineEdit',
+        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
+      }, '*');
+    }
+  });
+</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const SCROLL_KEYS = new Set([
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+    ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End',
+  ]);
+  const HORIZONTAL_KEYS = new Set(['ArrowLeft', 'ArrowRight']);
+
+  function isTextEntryTarget(target) {
+    if (!target) return false;
+    const tagName = target.tagName;
+    return tagName === 'INPUT' || tagName === 'TEXTAREA' ||
+        tagName === 'SELECT' || target.isContentEditable === true;
+  }
+
+  // An element absorbs the key only if it both overflows on the axis being
+  // scrolled and is configured to scroll on that axis. The cheap dimension
+  // test runs first because getComputedStyle forces a style recalc, and this
+  // runs on every keypress. Each axis is read from its own longhand: the
+  // 'overflow' shorthand serializes as two values when the axes differ, which
+  // is the common 'overflow-x: hidden; overflow-y: auto' pane.
+  function canScroll(node, horizontal) {
+    const overflows = horizontal ? node.scrollWidth > node.clientWidth
+                                 : node.scrollHeight > node.clientHeight;
+    if (!overflows) return false;
+    const style = window.getComputedStyle(node);
+    const overflow = horizontal ? style.overflowX : style.overflowY;
+    return overflow === 'auto' || overflow === 'scroll';
+  }
+
+  // Walks up from the event target so nested scrollers keep their behavior.
+  // <body> is included because pages that pin the root height make it the
+  // scroll container.
+  function hasScrollableAncestor(target, horizontal) {
+    let node = target;
+    while (node && node !== document.documentElement) {
+      if (canScroll(node, horizontal)) return true;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
+  function rootCanScroll(horizontal) {
+    const scroller = document.scrollingElement || document.documentElement;
+    if (!scroller) return false;
+    // Tolerate a pixel of rounding so subpixel layouts do not look scrollable.
+    return horizontal ? scroller.scrollWidth > window.innerWidth + 1
+                      : scroller.scrollHeight > window.innerHeight + 1;
+  }
+
+  window.addEventListener('keydown', function(event) {
+    if (!SCROLL_KEYS.has(event.key)) return;
+    if (event.defaultPrevented) return;
+    // Alt and Meta turn arrows into browser history navigation, and Ctrl is
+    // reserved for shortcuts, so none of them are scroll intent.
+    if (event.altKey || event.metaKey || event.ctrlKey) return;
+
+    const target = event.target;
+    if (isTextEntryTarget(target)) return;
+
+    // Anything that can still absorb the scroll gets to keep it.
+    const horizontal = HORIZONTAL_KEYS.has(event.key);
+    if (rootCanScroll(horizontal)) return;
+    if (hasScrollableAncestor(target, horizontal)) return;
+
+    event.preventDefault();
+  }, {capture: true, passive: false});
+})();</script><script data-bard-client-injected="true">(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script data-bard-client-injected="true">
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
+function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
+
+ Copyright The Closure Library Authors.
+ SPDX-License-Identifier: Apache-2.0
+*/
+function A(b,d){function e(){}e.prototype=d.prototype;b.j=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
+let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
+null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.i="";var l=0,t=null,r=null,q=[],F=new TextEncoder,G=new TextDecoder;
+c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*16|0;return(f===
+"x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;(g=t)==null||g.postMessage(a)}};
+Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
+(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
+url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
+</script><script data-bard-client-injected="true">((function(modelInformation) {
+  const originalFetch = window.fetch;
+  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
+  let googleLlmBaseApiUrls = [
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
+  ];
+  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+    );
+  });
+  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedGenerateImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedImageTransformModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+
+  const pendingFetchResolvers = {};
+  let nextPromiseId = 0;
+
+  function handleStringInput(input, optionsArgument) {
+    const actualUrl = input;
+    const fetchCallArgs = [actualUrl, optionsArgument];
+    const effectiveOptions = optionsArgument || {};
+    const bodyForApiKeyCheck = effectiveOptions.body;
+    const bodyForPostMessage = effectiveOptions.body;
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  function handleRequestInput(input, optionsArgument) {
+    const actualUrl = input.url;
+    const fetchCallArgs = [input, optionsArgument];
+    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (optionsArgument) {
+      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
+      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
+      if ('body' in optionsArgument) {
+        bodyForApiKeyCheck = optionsArgument.body;
+        bodyForPostMessage = optionsArgument.body;
+      } else {
+        bodyForApiKeyCheck = undefined;
+        bodyForPostMessage = input.body;
+      }
+    } else {
+      bodyForApiKeyCheck = undefined;
+      bodyForPostMessage = input.body;
+    }
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  window.fetch = function(input, optionsArgument) {
+    let actualUrl;
+    let fetchCallArgs;
+    let effectiveOptions = {};
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (typeof input === 'string') {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
+    } else if (input instanceof Request) {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
+    } else {
+      return originalFetch.apply(window, [input, optionsArgument]);
+    }
+
+    effectiveOptions.method = effectiveOptions.method || 'GET';
+    if (!effectiveOptions.headers) {
+      effectiveOptions.headers = new Headers();
+    }
+
+
+    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
+      let apiKeyIsNull = true;
+
+      const regex = new RegExp("models/([^:]+)");
+      const modelNameMatch = actualUrl.match(regex);
+      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
+
+
+      try {
+        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
+        const apiKeyParam = urlObject.searchParams.get('key');
+        if (apiKeyParam) {
+          apiKeyIsNull = false;
+        }
+      } catch (e) {
+        // Continue checks even if URL parsing fails
+      }
+
+      if (apiKeyIsNull && effectiveOptions.headers) {
+        const h = new Headers(effectiveOptions.headers);
+        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
+        if (apiKeyHeaderValue) {
+          apiKeyIsNull = false;
+          return originalFetch.apply(window, fetchCallArgs);
+        }
+      }
+
+      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
+        try {
+          const bodyData = JSON.parse(bodyForApiKeyCheck);
+          if (bodyData && bodyData.apiKey) {
+            apiKeyIsNull = false;
+            return originalFetch.apply(window, fetchCallArgs);
+          }
+        } catch (e) {
+          // Ignore JSON parsing errors
+        }
+      }
+
+      if(apiKeyIsNull) {
+        const promiseId = nextPromiseId++;
+        const promise = new Promise((resolve) => {
+          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
+            delete pendingFetchResolvers[promiseId];
+            resolve(resolvedResponse);
+          };
+        });
+
+        let serializedBodyForPostMessage;
+        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
+            serializedBodyForPostMessage = bodyForPostMessage;
+        } else if (bodyForPostMessage instanceof ReadableStream) {
+            serializedBodyForPostMessage = null;
+        } else {
+            try {
+                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
+            } catch (e) {
+                serializedBodyForPostMessage = null;
+            }
+        }
+
+        const messageOptions = {
+            method: effectiveOptions.method,
+            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
+            body: serializedBodyForPostMessage
+        };
+
+        window.parent.postMessage({
+          type: 'requestFetch',
+          url: actualUrl,
+          modelName: modelName,
+          options: messageOptions,
+          promiseId: promiseId,
+        }, '*');
+
+        return promise;
+      }
+      return originalFetch.apply(window, fetchCallArgs);
+    }
+    return originalFetch.apply(window, fetchCallArgs);
+  };
+
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'resolveFetch') {
+      const { promiseId, response } = event.data;
+      if (pendingFetchResolvers[promiseId]) {
+        try {
+          const reconstructedResponse = new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: new Headers(response.headers),
+          });
+          pendingFetchResolvers[promiseId](reconstructedResponse);
+        } catch (error) {
+          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
+        }
+      }
+    }
+  });
+
+}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-3.1-flash-image","imageTransformModelName":"gemini-3-pro-image","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"],"deprecatedGenerateImageModelNames":["gemini-2.5-flash-image-preview","gemini-2.5-flash-image","gemini-3.1-flash-image-preview"],"deprecatedImageTransformModelNames":["gemini-3-pro-image-preview-11-2025"]})</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정부 민원 서비스 안내 대시보드</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    },
+                    colors: {
+                        govBlue: '#003366',
+                        govHover: '#002244',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Pretendard, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.left-4{left:1rem}.right-3{right:0.75rem}.right-5{right:1.25rem}.top-0{top:0px}.top-1\/2{top:50%}.top-5{top:1.25rem}.z-30{z-index:30}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:0.5rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mr-1{margin-right:0.25rem}.mr-1\.5{margin-right:0.375rem}.mr-2{margin-right:0.5rem}.mt-1{margin-top:0.25rem}.mt-12{margin-top:3rem}.mb-1{margin-bottom:0.25rem}.mb-3{margin-bottom:0.75rem}.line-clamp-1{overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-12{height:3rem}.h-16{height:4rem}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-12{width:3rem}.w-16{width:4rem}.w-full{width:100%}.max-w-7xl{max-width:80rem}.max-w-lg{max-width:32rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.border-collapse{border-collapse:collapse}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.scale-95{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.list-disc{list-style-type:disc}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1\.5{gap:0.375rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.space-x-1 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.25rem * var(--tw-space-x-reverse));margin-left:calc(0.25rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.375rem * var(--tw-space-x-reverse));margin-left:calc(0.375rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-3 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.75rem * var(--tw-space-x-reverse));margin-left:calc(0.75rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-slate-100 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(241 245 249 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-md{border-radius:0.375rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-dashed{border-style:dashed}.border-blue-400\/30{border-color:rgb(96 165 250 / 0.3)}.border-emerald-200{--tw-border-opacity:1;border-color:rgb(167 243 208 / var(--tw-border-opacity, 1))}.border-govBlue{--tw-border-opacity:1;border-color:rgb(0 51 102 / var(--tw-border-opacity, 1))}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-200\/80{border-color:rgb(226 232 240 / 0.8)}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-rose-200{--tw-border-opacity:1;border-color:rgb(254 205 211 / var(--tw-border-opacity, 1))}.border-slate-200\/90{border-color:rgb(226 232 240 / 0.9)}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-blue-50{--tw-bg-opacity:1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.bg-blue-500\/30{background-color:rgb(59 130 246 / 0.3)}.bg-blue-900\/50{background-color:rgb(30 58 138 / 0.5)}.bg-blue-900\/80{background-color:rgb(30 58 138 / 0.8)}.bg-emerald-50{--tw-bg-opacity:1;background-color:rgb(236 253 245 / var(--tw-bg-opacity, 1))}.bg-govBlue{--tw-bg-opacity:1;background-color:rgb(0 51 102 / var(--tw-bg-opacity, 1))}.bg-indigo-50{--tw-bg-opacity:1;background-color:rgb(238 242 255 / var(--tw-bg-opacity, 1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-100\/80{background-color:rgb(241 245 249 / 0.8)}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900\/60{background-color:rgb(15 23 42 / 0.6)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-emerald-100{--tw-bg-opacity:1;background-color:rgb(209 250 229 / var(--tw-bg-opacity, 1))}.bg-rose-100{--tw-bg-opacity:1;background-color:rgb(255 228 230 / var(--tw-bg-opacity, 1))}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.pl-11{padding-left:2.75rem}.pl-4{padding-left:1rem}.pr-10{padding-right:2.5rem}.pr-6{padding-right:1.5rem}.pt-3{padding-top:0.75rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.text-\[10px\]{font-size:10px}.text-\[8px\]{font-size:8px}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.text-blue-100{--tw-text-opacity:1;color:rgb(219 234 254 / var(--tw-text-opacity, 1))}.text-blue-200{--tw-text-opacity:1;color:rgb(191 219 254 / var(--tw-text-opacity, 1))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105 / var(--tw-text-opacity, 1))}.text-emerald-800{--tw-text-opacity:1;color:rgb(6 95 70 / var(--tw-text-opacity, 1))}.text-govBlue{--tw-text-opacity:1;color:rgb(0 51 102 / var(--tw-text-opacity, 1))}.text-indigo-600{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-emerald-500{--tw-text-opacity:1;color:rgb(16 185 129 / var(--tw-text-opacity, 1))}.text-rose-500{--tw-text-opacity:1;color:rgb(244 63 94 / var(--tw-text-opacity, 1))}.text-rose-800{--tw-text-opacity:1;color:rgb(159 18 57 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.opacity-0{opacity:0}.shadow{--tw-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-200{transition-duration:200ms}.hover\:border-govBlue\/40:hover{border-color:rgb(0 51 102 / 0.4)}.hover\:bg-govHover:hover{--tw-bg-opacity:1;background-color:rgb(0 34 68 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-200:hover{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.hover\:text-govBlue:hover{--tw-text-opacity:1;color:rgb(0 51 102 / var(--tw-text-opacity, 1))}.hover\:text-slate-600:hover{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.hover\:text-slate-900:hover{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:shadow-md:hover{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.focus\:border-govBlue:focus{--tw-border-opacity:1;border-color:rgb(0 51 102 / var(--tw-border-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-govBlue\/40:focus{--tw-ring-color:rgb(0 51 102 / 0.4)}.group:hover .group-hover\:bg-govBlue{--tw-bg-opacity:1;background-color:rgb(0 51 102 / var(--tw-bg-opacity, 1))}.group:hover .group-hover\:text-govBlue{--tw-text-opacity:1;color:rgb(0 51 102 / var(--tw-text-opacity, 1))}.group:hover .group-hover\:text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:block{display:block}.sm\:inline{display:inline}.sm\:justify-end{justify-content:flex-end}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}.sm\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:w-auto{width:auto}.lg\:max-w-md{max-width:28rem}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:flex-row{flex-direction:row}.lg\:px-8{padding-left:2rem;padding-right:2rem}}</style></head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <header class="bg-govBlue text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="resetFilters()">
+                <div class="bg-white text-govBlue p-2 rounded-lg font-bold text-xl flex items-center justify-center w-10 h-10 shadow">
+                    <i class="fa-solid fa-landmark"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold tracking-tight">대한민국 스마트 민원 포털</h1>
+                    <p class="text-xs text-blue-200 hidden sm:block">한눈에 보는 민원 서비스 안내 대시보드</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 text-xs sm:text-sm">
+                <span class="bg-blue-900/50 text-blue-100 px-3 py-1.5 rounded-full border border-blue-400/30">
+                    <i class="fa-solid fa-circle-check text-emerald-400 mr-1.5"></i>데이터 정상 연동됨
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        
+        <!-- Summary Cards Section -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5 flex items-center justify-between hover:shadow-md transition">
+                <div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">전체 민원 서비스</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1" id="stat-total">22개</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5 flex items-center justify-between hover:shadow-md transition">
+                <div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">온라인 처리 가능</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-1" id="stat-online">16개</p>
+                </div>
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-laptop"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5 flex items-center justify-between hover:shadow-md transition">
+                <div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">수수료 무료 서비스</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-indigo-600 mt-1" id="stat-free">9개</p>
+                </div>
+                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5 flex items-center justify-between hover:shadow-md transition">
+                <div>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">평균 처리기한</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-amber-600 mt-1" id="stat-avg-days">3.7일</p>
+                </div>
+                <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-regular fa-clock"></i>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5 mb-6">
+            <!-- Top Search and View Switcher -->
+            <div class="flex flex-col lg:flex-row gap-4 justify-between items-center mb-5">
+                <div class="relative w-full lg:max-w-md">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="search-input" placeholder="서비스명, 소관기관, ID 검색 (예: 주민등록, 건축과)" class="w-full pl-11 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-govBlue/40 focus:border-govBlue transition">
+                    <button id="clear-search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between sm:justify-end gap-3 w-full lg:w-auto">
+                    <!-- Sort Selection -->
+                    <div class="flex items-center space-x-2">
+                        <label for="sort-select" class="text-xs font-semibold text-slate-500 shrink-0">정렬기준:</label>
+                        <select id="sort-select" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-govBlue/40">
+                            <option value="id-asc">서비스ID 순</option>
+                            <option value="fee-asc">수수료 낮은 순</option>
+                            <option value="days-asc">처리기한 짧은 순</option>
+                            <option value="name-asc">서비스명 가나다 순</option>
+                        </select>
+                    </div>
+
+                    <!-- View Toggle Buttons -->
+                    <div class="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200">
+                        <button id="btn-grid-view" class="px-3 py-1.5 rounded-md text-sm font-medium transition flex items-center space-x-1.5 bg-white text-govBlue shadow-sm">
+                            <i class="fa-solid fa-border-all"></i>
+                            <span class="hidden sm:inline">카드</span>
+                        </button>
+                        <button id="btn-table-view" class="px-3 py-1.5 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5">
+                            <i class="fa-solid fa-list"></i>
+                            <span class="hidden sm:inline">테이블</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Chips -->
+            <div class="space-y-3 pt-3 border-t border-slate-100">
+                <!-- 민원분야 카테고리 -->
+                <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-xs font-bold text-slate-500 mr-2 shrink-0"><i class="fa-solid fa-folder-tree mr-1"></i>민원분야:</span>
+                    <div id="category-buttons" class="flex flex-wrap gap-1.5"><button data-category="ALL" class="cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-govBlue text-white border-govBlue">
+                    전체
+                </button><button data-category="주민등록" class="cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+                    <i class="fa-solid fa-id-card mr-1"></i>주민등록
+                </button><button data-category="건축" class="cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+                    <i class="fa-solid fa-building mr-1"></i>건축
+                </button><button data-category="세무" class="cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+                    <i class="fa-solid fa-file-invoice-dollar mr-1"></i>세무
+                </button><button data-category="복지" class="cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+                    <i class="fa-solid fa-hand-holding-heart mr-1"></i>복지
+                </button><button data-category="교통" class="cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+                    <i class="fa-solid fa-car mr-1"></i>교통
+                </button><button data-category="환경" class="cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+                    <i class="fa-solid fa-leaf mr-1"></i>환경
+                </button><button data-category="위생" class="cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+                    <i class="fa-solid fa-utensils mr-1"></i>위생
+                </button><button data-category="여권" class="cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100">
+                    <i class="fa-solid fa-passport mr-1"></i>여권
+                </button></div>
+                </div>
+
+                <!-- 온라인 처리 여부 카테고리 -->
+                <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-xs font-bold text-slate-500 mr-2 shrink-0"><i class="fa-solid fa-globe mr-1"></i>온라인 처리:</span>
+                    <button data-online="ALL" class="online-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-govBlue text-white border-govBlue">전체</button>
+                    <button data-online="가능" class="online-filter-btn px-3 py-1 text-xs font-medium rounded-full border bg-white text-slate-600 border-slate-200 hover:bg-slate-100 transition">온라인 가능</button>
+                    <button data-online="불가" class="online-filter-btn px-3 py-1 text-xs font-medium rounded-full border bg-white text-slate-600 border-slate-200 hover:bg-slate-100 transition">온라인 불가</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex justify-between items-center mb-4 px-1">
+            <p class="text-sm font-medium text-slate-600">
+                검색 결과 <span id="result-count" class="font-bold text-govBlue">22</span>건
+            </p>
+            <button onclick="resetFilters()" class="text-xs text-slate-500 hover:text-govBlue underline flex items-center space-x-1">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>필터 초기화</span>
+            </button>
+        </div>
+
+        <div id="grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div onclick="openModal('S001')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S001</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-id-card text-slate-400"></i>
+                                <span>주민등록</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">주민등록등본 발급</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">주민센터</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">7일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">500원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S002')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S002</span>
+                            <span class="bg-rose-100 text-rose-800 border border-rose-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-rose-500"></i><span>온라인 불가</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-id-card text-slate-400"></i>
+                                <span>주민등록</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">전입신고</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">복지정책과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">1일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-indigo-600 font-bold">무료</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S003')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S003</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-id-card text-slate-400"></i>
+                                <span>주민등록</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">인감증명 발급</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">복지정책과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">즉시 (당일)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-indigo-600 font-bold">무료</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S004')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S004</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-id-card text-slate-400"></i>
+                                <span>주민등록</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">주민등록증 재발급</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">건축과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">즉시 (당일)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-indigo-600 font-bold">무료</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S005')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S005</span>
+                            <span class="bg-rose-100 text-rose-800 border border-rose-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-rose-500"></i><span>온라인 불가</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-building text-slate-400"></i>
+                                <span>건축</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">건축물대장 발급</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">구청 민원봉사과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">즉시 (당일)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">1,000원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S006')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S006</span>
+                            <span class="bg-rose-100 text-rose-800 border border-rose-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-rose-500"></i><span>온라인 불가</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-building text-slate-400"></i>
+                                <span>건축</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">건축허가 신청</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">건축과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">1일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">2,000원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S007')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S007</span>
+                            <span class="bg-rose-100 text-rose-800 border border-rose-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-rose-500"></i><span>온라인 불가</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-building text-slate-400"></i>
+                                <span>건축</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">용도변경 신고</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">시청 민원과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">즉시 (당일)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-indigo-600 font-bold">무료</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S008')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S008</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-file-invoice-dollar text-slate-400"></i>
+                                <span>세무</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">지방세 납부확인서</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">건축과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">1일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">1,000원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S009')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S009</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-file-invoice-dollar text-slate-400"></i>
+                                <span>세무</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">취득세 신고</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">교통행정과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">즉시 (당일)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-indigo-600 font-bold">무료</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S010')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S010</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-file-invoice-dollar text-slate-400"></i>
+                                <span>세무</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">재산세 조회</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">교통행정과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">3일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-indigo-600 font-bold">무료</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S011')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S011</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-hand-holding-heart text-slate-400"></i>
+                                <span>복지</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">기초연금 신청</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">건축과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">7일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">500원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S012')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S012</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-hand-holding-heart text-slate-400"></i>
+                                <span>복지</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">복지급여 조회</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">시청 민원과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">14일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">5,000원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S013')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S013</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-hand-holding-heart text-slate-400"></i>
+                                <span>복지</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">장애인 등록</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">주민센터</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">5일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-indigo-600 font-bold">무료</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S014')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S014</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-car text-slate-400"></i>
+                                <span>교통</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">자동차 등록</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">주민센터</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">1일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">5,000원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S015')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S015</span>
+                            <span class="bg-rose-100 text-rose-800 border border-rose-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-rose-500"></i><span>온라인 불가</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-car text-slate-400"></i>
+                                <span>교통</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">운전면허 갱신</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">교통행정과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">1일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-indigo-600 font-bold">무료</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S016')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S016</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-car text-slate-400"></i>
+                                <span>교통</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">주정차 위반 조회</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">주민센터</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">7일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">1,000원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S017')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S017</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-leaf text-slate-400"></i>
+                                <span>환경</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">배출시설 신고</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">주민센터</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">1일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-indigo-600 font-bold">무료</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S018')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S018</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-leaf text-slate-400"></i>
+                                <span>환경</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">폐기물 처리 신청</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">시청 민원과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">14일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">5,000원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S019')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S019</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-utensils text-slate-400"></i>
+                                <span>위생</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">식품영업 신고</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">건축과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">3일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">2,000원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S020')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S020</span>
+                            <span class="bg-rose-100 text-rose-800 border border-rose-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-rose-500"></i><span>온라인 불가</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-utensils text-slate-400"></i>
+                                <span>위생</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">위생업소 조회</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">시청 민원과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">7일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">500원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S021')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S021</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-passport text-slate-400"></i>
+                                <span>여권</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">여권 발급 신청</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">건축과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">7일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">1,000원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                
+                <div onclick="openModal('S022')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">S022</span>
+                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid fa-passport text-slate-400"></i>
+                                <span>여권</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">여권 재발급</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">교통행정과</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">1일 이내</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                <span class="text-slate-700 font-semibold">1,000원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                </div>
+
+        <div id="table-container" class="hidden bg-white rounded-xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100/80 text-slate-600 text-xs uppercase font-semibold border-b border-slate-200">
+                            <th class="py-3.5 px-4">서비스 ID</th>
+                            <th class="py-3.5 px-4">서비스명</th>
+                            <th class="py-3.5 px-4">민원분야</th>
+                            <th class="py-3.5 px-4">소관기관</th>
+                            <th class="py-3.5 px-4">온라인 처리</th>
+                            <th class="py-3.5 px-4">처리기한</th>
+                            <th class="py-3.5 px-4">수수료</th>
+                            <th class="py-3.5 px-4 text-center">상세보기</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-slate-100 text-sm text-slate-700">
+                        <!-- Rows populated dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty State View -->
+        <div id="empty-state" class="hidden text-center py-16 bg-white rounded-xl border border-dashed border-slate-300">
+            <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-700">검색 결과가 없습니다</h3>
+            <p class="text-sm text-slate-500 mt-1 mb-4">검색어를 변경하거나 필터 조건 조절 후 다시 확인해보세요.</p>
+            <button onclick="resetFilters()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition">
+                필터 초기화
+            </button>
+        </div>
+
+    </main>
+
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity opacity-0">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform scale-95 transition-transform duration-200" id="modal-content">
+            <!-- Modal Header -->
+            <div class="bg-govBlue text-white p-6 relative">
+                <button onclick="closeModal()" class="absolute top-5 right-5 text-blue-200 hover:text-white text-xl transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="flex items-center space-x-2 text-xs font-semibold text-blue-200 mb-2">
+                    <span id="modal-id" class="bg-blue-900/80 px-2 py-0.5 rounded border border-blue-400/30">S000</span>
+                    <span id="modal-category" class="bg-blue-500/30 px-2 py-0.5 rounded">분야</span>
+                </div>
+                <h3 id="modal-title" class="text-xl font-bold pr-6">민원 서비스명</h3>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div>
+                        <span class="text-xs text-slate-500 font-medium block">소관기관</span>
+                        <span id="modal-agency" class="text-sm font-semibold text-slate-800">소관기관명</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 font-medium block">온라인 신청</span>
+                        <span id="modal-online" class="text-sm font-semibold">가능 여부</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 font-medium block">처리기한</span>
+                        <span id="modal-days" class="text-sm font-semibold text-slate-800">0일</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 font-medium block">발급/신청 수수료</span>
+                        <span id="modal-fee" class="text-sm font-semibold text-slate-800">0원</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">신청 안내</h4>
+                    <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4">
+                        <li>본 서비스는 관련 법령에 의하여 본인 및 위임받은 대리인이 신청 가능합니다.</li>
+                        <li>온라인처리가 <span class="font-bold text-emerald-600">가능</span>한 경우 본인인증 후 즉시 발급/신청 가능합니다.</li>
+                        <li>방문 신청 시 신분증을 반드시 지참해주시기 바랍니다.</li>
+                    </ul>
+                </div>
+
+                <!-- Simulation Notification Area -->
+                <div id="modal-alert" class="hidden p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-xs flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                    <span>모의 온라인 신청 페이지로 연결되는 안내창입니다. (테스트)</span>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex justify-end space-x-3">
+                <button onclick="closeModal()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-100 transition">
+                    닫기
+                </button>
+                <button id="modal-apply-btn" onclick="simulateApply()" class="px-4 py-2 bg-govBlue text-white text-xs font-semibold rounded-lg hover:bg-govHover transition flex items-center space-x-1.5 shadow-sm">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>민원 신청하기</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-800 text-slate-400 text-xs py-6 mt-12 border-t border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p>© 2026 대한민국 민원 서비스 안내 대시보드. All rights reserved.</p>
+            <p class="text-slate-500">본 사이트는 민원서비스 목록 JSON 데이터를 시각화하여 사용자의 편의를 돕는 대시보드입니다.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data derived directly from JSON provided
+        const minwonData = [
+            { "서비스ID": "S001", "서비스명": "주민등록등본 발급", "소관기관": "주민센터", "민원분야": "주민등록", "온라인처리": "가능", "처리기한일": 7, "수수료": 500 },
+            { "서비스ID": "S002", "서비스명": "전입신고", "소관기관": "복지정책과", "민원분야": "주민등록", "온라인처리": "불가", "처리기한일": 1, "수수료": 0 },
+            { "서비스ID": "S003", "서비스명": "인감증명 발급", "소관기관": "복지정책과", "민원분야": "주민등록", "온라인처리": "가능", "처리기한일": 0, "수수료": 0 },
+            { "서비스ID": "S004", "서비스명": "주민등록증 재발급", "소관기관": "건축과", "민원분야": "주민등록", "온라인처리": "가능", "처리기한일": 0, "수수료": 0 },
+            { "서비스ID": "S005", "서비스명": "건축물대장 발급", "소관기관": "구청 민원봉사과", "민원분야": "건축", "온라인처리": "불가", "처리기한일": 0, "수수료": 1000 },
+            { "서비스ID": "S006", "서비스명": "건축허가 신청", "소관기관": "건축과", "민원분야": "건축", "온라인처리": "불가", "처리기한일": 1, "수수료": 2000 },
+            { "서비스ID": "S007", "서비스명": "용도변경 신고", "소관기관": "시청 민원과", "민원분야": "건축", "온라인처리": "불가", "처리기한일": 0, "수수료": 0 },
+            { "서비스ID": "S008", "서비스명": "지방세 납부확인서", "소관기관": "건축과", "민원분야": "세무", "온라인처리": "가능", "처리기한일": 1, "수수료": 1000 },
+            { "서비스ID": "S009", "서비스명": "취득세 신고", "소관기관": "교통행정과", "민원분야": "세무", "온라인처리": "가능", "처리기한일": 0, "수수료": 0 },
+            { "서비스ID": "S010", "서비스명": "재산세 조회", "소관기관": "교통행정과", "민원분야": "세무", "온라인처리": "가능", "처리기한일": 3, "수수료": 0 },
+            { "서비스ID": "S011", "서비스명": "기초연금 신청", "소관기관": "건축과", "민원분야": "복지", "온라인처리": "가능", "처리기한일": 7, "수수료": 500 },
+            { "서비스ID": "S012", "서비스명": "복지급여 조회", "소관기관": "시청 민원과", "민원분야": "복지", "온라인처리": "가능", "처리기한일": 14, "수수료": 5000 },
+            { "서비스ID": "S013", "서비스명": "장애인 등록", "소관기관": "주민센터", "민원분야": "복지", "온라인처리": "가능", "처리기한일": 5, "수수료": 0 },
+            { "서비스ID": "S014", "서비스명": "자동차 등록", "소관기관": "주민센터", "민원분야": "교통", "온라인처리": "가능", "처리기한일": 1, "수수료": 5000 },
+            { "서비스ID": "S015", "서비스명": "운전면허 갱신", "소관기관": "교통행정과", "민원분야": "교통", "온라인처리": "불가", "처리기한일": 1, "수수료": 0 },
+            { "서비스ID": "S016", "서비스명": "주정차 위반 조회", "소관기관": "주민센터", "민원분야": "교통", "온라인처리": "가능", "처리기한일": 7, "수수료": 1000 },
+            { "서비스ID": "S017", "서비스명": "배출시설 신고", "소관기관": "주민센터", "민원분야": "환경", "온라인처리": "가능", "처리기한일": 1, "수수료": 0 },
+            { "서비스ID": "S018", "서비스명": "폐기물 처리 신청", "소관기관": "시청 민원과", "민원분야": "환경", "온라인처리": "가능", "처리기한일": 14, "수수료": 5000 },
+            { "서비스ID": "S019", "서비스명": "식품영업 신고", "소관기관": "건축과", "민원분야": "위생", "온라인처리": "가능", "처리기한일": 3, "수수료": 2000 },
+            { "서비스ID": "S020", "서비스명": "위생업소 조회", "소관기관": "시청 민원과", "민원분야": "위생", "온라인처리": "불가", "처리기한일": 7, "수수료": 500 },
+            { "서비스ID": "S021", "서비스명": "여권 발급 신청", "소관기관": "건축과", "민원분야": "여권", "온라인처리": "가능", "처리기한일": 7, "수수료": 1000 },
+            { "서비스ID": "S022", "서비스명": "여권 재발급", "소관기관": "교통행정과", "민원분야": "여권", "온라인처리": "가능", "처리기한일": 1, "수수료": 1000 }
+        ];
+
+        // App State
+        let currentCategory = 'ALL';
+        let currentOnline = 'ALL';
+        let currentQuery = '';
+        let currentSort = 'id-asc';
+        let currentView = 'grid'; // 'grid' or 'table'
+
+        // Category Icon Mapping
+        const categoryIcons = {
+            '주민등록': 'fa-id-card',
+            '건축': 'fa-building',
+            '세무': 'fa-file-invoice-dollar',
+            '복지': 'fa-hand-holding-heart',
+            '교통': 'fa-car',
+            '환경': 'fa-leaf',
+            '위생': 'fa-utensils',
+            '여권': 'fa-passport'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboardStats();
+            initCategoryButtons();
+            setupEventListeners();
+            render();
+        });
+
+        // Initialize Summary Dashboard Stats
+        function initDashboardStats() {
+            const total = minwonData.length;
+            const onlineCount = minwonData.filter(item => item.온라인처리 === '가능').length;
+            const freeCount = minwonData.filter(item => item.수수료 === 0).length;
+            const totalDays = minwonData.reduce((sum, item) => sum + item.처리기한일, 0);
+            const avgDays = (totalDays / total).toFixed(1);
+
+            document.getElementById('stat-total').textContent = `${total}개`;
+            document.getElementById('stat-online').textContent = `${onlineCount}개`;
+            document.getElementById('stat-free').textContent = `${freeCount}개`;
+            document.getElementById('stat-avg-days').textContent = `${avgDays}일`;
+        }
+
+        // Initialize Dynamic Category Filter Buttons
+        function initCategoryButtons() {
+            const container = document.getElementById('category-buttons');
+            const categories = ['ALL', ...new Set(minwonData.map(item => item.민원분야))];
+
+            container.innerHTML = categories.map(cat => {
+                const label = cat === 'ALL' ? '전체' : cat;
+                const icon = categoryIcons[cat] ? `<i class="fa-solid ${categoryIcons[cat]} mr-1"></i>` : '';
+                const isSelected = cat === 'ALL';
+                const activeClass = isSelected 
+                    ? 'bg-govBlue text-white border-govBlue' 
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100';
+
+                return `<button data-category="${cat}" class="cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition ${activeClass}">
+                    ${icon}${label}
+                </button>`;
+            }).join('');
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Search Input Event
+            const searchInput = document.getElementById('search-input');
+            const clearBtn = document.getElementById('clear-search');
+
+            searchInput.addEventListener('input', (e) => {
+                currentQuery = e.target.value.trim().toLowerCase();
+                clearBtn.classList.toggle('hidden', currentQuery === '');
+                render();
+            });
+
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                currentQuery = '';
+                clearBtn.classList.add('hidden');
+                render();
+            });
+
+            // Category Filter Click Event
+            document.getElementById('category-buttons').addEventListener('click', (e) => {
+                const btn = e.target.closest('.cat-filter-btn');
+                if (!btn) return;
+                
+                currentCategory = btn.dataset.category;
+                document.querySelectorAll('.cat-filter-btn').forEach(b => {
+                    b.className = 'cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100';
+                });
+                btn.className = 'cat-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-govBlue text-white border-govBlue';
+                render();
+            });
+
+            // Online Filter Click Event
+            document.querySelectorAll('.online-filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentOnline = btn.dataset.online;
+                    document.querySelectorAll('.online-filter-btn').forEach(b => {
+                        b.className = 'online-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100';
+                    });
+                    btn.className = 'online-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-govBlue text-white border-govBlue';
+                    render();
+                });
+            });
+
+            // Sort Selector Event
+            document.getElementById('sort-select').addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                render();
+            });
+
+            // View Toggle Events
+            document.getElementById('btn-grid-view').addEventListener('click', () => {
+                currentView = 'grid';
+                updateViewToggleButtons();
+                render();
+            });
+
+            document.getElementById('btn-table-view').addEventListener('click', () => {
+                currentView = 'table';
+                updateViewToggleButtons();
+                render();
+            });
+        }
+
+        function updateViewToggleButtons() {
+            const gridBtn = document.getElementById('btn-grid-view');
+            const tableBtn = document.getElementById('btn-table-view');
+
+            if (currentView === 'grid') {
+                gridBtn.className = 'px-3 py-1.5 rounded-md text-sm font-medium transition flex items-center space-x-1.5 bg-white text-govBlue shadow-sm';
+                tableBtn.className = 'px-3 py-1.5 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5';
+                document.getElementById('grid-container').classList.remove('hidden');
+                document.getElementById('table-container').classList.add('hidden');
+            } else {
+                tableBtn.className = 'px-3 py-1.5 rounded-md text-sm font-medium transition flex items-center space-x-1.5 bg-white text-govBlue shadow-sm';
+                gridBtn.className = 'px-3 py-1.5 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5';
+                document.getElementById('grid-container').classList.add('hidden');
+                document.getElementById('table-container').classList.remove('hidden');
+            }
+        }
+
+        function getFilteredAndSortedData() {
+            return minwonData.filter(item => {
+                // Category match
+                const matchCategory = currentCategory === 'ALL' || item.민원분야 === currentCategory;
+                // Online match
+                const matchOnline = currentOnline === 'ALL' || item.온라인처리 === currentOnline;
+                // Query match
+                const matchQuery = currentQuery === '' || 
+                    item.서비스명.toLowerCase().includes(currentQuery) ||
+                    item.소관기관.toLowerCase().includes(currentQuery) ||
+                    item.서비스ID.toLowerCase().includes(currentQuery);
+
+                return matchCategory && matchOnline && matchQuery;
+            }).sort((a, b) => {
+                if (currentSort === 'id-asc') {
+                    return a.서비스ID.localeCompare(b.서비스ID);
+                } else if (currentSort === 'fee-asc') {
+                    return a.수수료 - b.수수료;
+                } else if (currentSort === 'days-asc') {
+                    return a.처리기한일 - b.처리기한일;
+                } else if (currentSort === 'name-asc') {
+                    return a.서비스명.localeCompare(b.서비스명, 'ko');
+                }
+                return 0;
+            });
+        }
+
+        // Reset Filters Helper
+        function resetFilters() {
+            currentCategory = 'ALL';
+            currentOnline = 'ALL';
+            currentQuery = '';
+            currentSort = 'id-asc';
+
+            document.getElementById('search-input').value = '';
+            document.getElementById('clear-search').classList.add('hidden');
+            document.getElementById('sort-select').value = 'id-asc';
+
+            initCategoryButtons();
+            document.querySelectorAll('.online-filter-btn').forEach((b, idx) => {
+                if(idx === 0) b.className = 'online-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-govBlue text-white border-govBlue';
+                else b.className = 'online-filter-btn px-3 py-1 text-xs font-medium rounded-full border transition bg-white text-slate-600 border-slate-200 hover:bg-slate-100';
+            });
+
+            render();
+        }
+
+        function render() {
+            const data = getFilteredAndSortedData();
+            document.getElementById('result-count').textContent = data.length;
+
+            const emptyState = document.getElementById('empty-state');
+            const gridContainer = document.getElementById('grid-container');
+            const tableContainer = document.getElementById('table-container');
+
+            if (data.length === 0) {
+                gridContainer.classList.add('hidden');
+                tableContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            if (currentView === 'grid') {
+                gridContainer.classList.remove('hidden');
+                renderGrid(data);
+            } else {
+                tableContainer.classList.remove('hidden');
+                renderTable(data);
+            }
+        }
+
+        // Render Card Grid
+        function renderGrid(data) {
+            const container = document.getElementById('grid-container');
+            container.innerHTML = data.map(item => {
+                const onlineBadge = item.온라인처리 === '가능'
+                    ? `<span class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i><span>온라인 가능</span></span>`
+                    : `<span class="bg-rose-100 text-rose-800 border border-rose-200 text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center space-x-1"><i class="fa-solid fa-circle text-[8px] text-rose-500"></i><span>온라인 불가</span></span>`;
+
+                const feeBadge = item.수수료 === 0
+                    ? `<span class="text-indigo-600 font-bold">무료</span>`
+                    : `<span class="text-slate-700 font-semibold">${item.수수료.toLocaleString()}원</span>`;
+
+                const dayDisplay = item.처리기한일 === 0 ? '즉시 (당일)' : `${item.처리기한일}일 이내`;
+                const icon = categoryIcons[item.민원분야] || 'fa-file-lines';
+
+                return `
+                <div onclick="openModal('${item.서비스ID}')" class="bg-white rounded-xl border border-slate-200/90 hover:border-govBlue/40 shadow-sm hover:shadow-md transition cursor-pointer p-5 flex flex-col justify-between group">
+                    <div>
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">${item.서비스ID}</span>
+                            ${onlineBadge}
+                        </div>
+
+                        <!-- Title & Category -->
+                        <div class="mb-4">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-500 mb-1">
+                                <i class="fa-solid ${icon} text-slate-400"></i>
+                                <span>${item.민원분야}</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 group-hover:text-govBlue transition line-clamp-1">${item.서비스명}</h3>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-lg border border-slate-100 mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">소관기관</span>
+                                <span class="font-medium text-slate-800">${item.소관기관}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">처리기한</span>
+                                <span class="font-medium text-slate-800">${dayDisplay}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">수수료</span>
+                                ${feeBadge}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 bg-slate-100 group-hover:bg-govBlue text-slate-700 group-hover:text-white rounded-lg text-xs font-semibold transition flex items-center justify-center space-x-1">
+                        <span>상세보기 및 신청</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // Render Table View
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = data.map(item => {
+                const onlineBadge = item.온라인처리 === '가능'
+                    ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">가능</span>`
+                    : `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">불가</span>`;
+
+                const feeBadge = item.수수료 === 0
+                    ? `<span class="text-indigo-600 font-bold">무료</span>`
+                    : `<span>${item.수수료.toLocaleString()}원</span>`;
+
+                const dayDisplay = item.처리기한일 === 0 ? '즉시' : `${item.처리기한일}일`;
+
+                return `
+                <tr class="hover:bg-slate-50/80 transition">
+                    <td class="py-3 px-4 font-mono text-xs text-slate-500">${item.서비스ID}</td>
+                    <td class="py-3 px-4 font-bold text-slate-800">${item.서비스명}</td>
+                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded">${item.민원분야}</span></td>
+                    <td class="py-3 px-4 text-slate-600">${item.소관기관}</td>
+                    <td class="py-3 px-4">${onlineBadge}</td>
+                    <td class="py-3 px-4 text-slate-600">${dayDisplay}</td>
+                    <td class="py-3 px-4">${feeBadge}</td>
+                    <td class="py-3 px-4 text-center">
+                        <button onclick="openModal('${item.서비스ID}')" class="px-2.5 py-1 bg-govBlue hover:bg-govHover text-white text-xs rounded transition">
+                            조회
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function openModal(serviceId) {
+            const item = minwonData.find(d => d.서비스ID === serviceId);
+            if (!item) return;
+
+            document.getElementById('modal-id').textContent = item.서비스ID;
+            document.getElementById('modal-category').textContent = item.민원분야;
+            document.getElementById('modal-title').textContent = item.서비스명;
+            document.getElementById('modal-agency').textContent = item.소관기관;
+            
+            const onlineText = item.온라인처리 === '가능' 
+                ? '<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check mr-1"></i>온라인 가능</span>' 
+                : '<span class="text-rose-600 font-bold"><i class="fa-solid fa-circle-xmark mr-1"></i>온라인 불가 (방문필요)</span>';
+            document.getElementById('modal-online').innerHTML = onlineText;
+
+            const daysText = item.처리기한일 === 0 ? '즉시 발급/처리 (당일)' : `${item.처리기한일}일 소요`;
+            document.getElementById('modal-days').textContent = daysText;
+
+            const feeText = item.수수료 === 0 ? '무료' : `${item.수수료.toLocaleString()}원`;
+            document.getElementById('modal-fee').textContent = feeText;
+
+            // Reset alert state
+            document.getElementById('modal-alert').classList.add('hidden');
+
+            // Apply Button enable/disable state based on online availability
+            const applyBtn = document.getElementById('modal-apply-btn');
+            if (item.온라인처리 === '가능') {
+                applyBtn.disabled = false;
+                applyBtn.className = "px-4 py-2 bg-govBlue text-white text-xs font-semibold rounded-lg hover:bg-govHover transition flex items-center space-x-1.5 shadow-sm";
+                applyBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i><span>온라인 신청하기</span>`;
+            } else {
+                applyBtn.disabled = true;
+                applyBtn.className = "px-4 py-2 bg-slate-300 text-slate-500 text-xs font-semibold rounded-lg cursor-not-allowed flex items-center space-x-1.5";
+                applyBtn.innerHTML = `<i class="fa-solid fa-ban"></i><span>방문 신청 전용</span>`;
+            }
+
+            // Display Modal with transition
+            const modal = document.getElementById('detail-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detail-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        function simulateApply() {
+            const alertBox = document.getElementById('modal-alert');
+            alertBox.classList.remove('hidden');
+        }
+
+        // Close modal when clicking backdrop
+        document.getElementById('detail-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'detail-modal') closeModal();
+        });
+    </script>
+
+</body></html>
